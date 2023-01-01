@@ -1,9 +1,15 @@
-"""Bullseye"""
+"""Bullseye
 
-import numpy as np
+Usage:
+  bullseye.py [opt <games> <seed>]
+
+Arguments:
+  <games> games to be played [default: 10].
+
+"""
+import docopt
 import math
 import random
-import statistics
 
 __version__ = "0.2.0"
 
@@ -64,7 +70,7 @@ def game():
   return i
 
 
-def main(games=10):
+def main(args):
   """for a given number of games, record the scores, then return the mean and
   of the scores
 
@@ -74,19 +80,32 @@ def main(games=10):
   Returns:
     mean (float):  the mean value of the scores
   """
+  #Default Values
+  if args['<games>'] == None:
+    games = 10
+  else:
+    games = int(args['<games>'])
+  if args['<seed>'] != None:
+    random.seed(int(args['<seed>']))
+  # init lists
   scores = [0]*games
   dev = [0]*games
+  # run i games
   for i in range(games):
     scores[i] = game()
     dev[i] = (math.pi/4) - scores[i]
     i = i + 1
-  mean = statistics.mean(scores)
+  mean = sum(scores)/games
   sdv = math.sqrt(abs(sum(dev))/games)
-  print(sdv)
   return mean
+
+def get_opts():
+  args = docopt.docopt(__doc__)
+  return args
 
 
 if __name__ == "__main__":
     """This code executes when the program is run from the command line"""
-    mean = main(100000)
+    args = get_opts()
+    mean = main(args)
     print(f"exp(pi/4) approx equal to {mean}")
