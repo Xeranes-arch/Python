@@ -100,12 +100,12 @@ def main(args):
   return mean
 
 def get_opts():
-  args = docopt.docopt(__doc__)
-  return args
+  options = docopt.docopt(__doc__)
+  return options
 
 
 if __name__ == "__main__":
     """This code executes when the program is run from the command line"""
-    args = get_opts()
-    mean = main(args)
+    opts = get_opts()
+    mean = main(opts)
     print(f"exp(pi/4) approx equal to {mean}")
