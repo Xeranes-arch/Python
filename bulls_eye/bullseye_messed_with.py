@@ -70,7 +70,7 @@ def game():
   return i
 
 
-def main(args):
+def main(opts, games):
   """for a given number of games, record the scores, then return the mean and
   of the scores
 
@@ -81,12 +81,8 @@ def main(args):
     mean (float):  the mean value of the scores
   """
   #Default Values
-  if args['<games>'] == None:
-    games = 10
-  else:
-    games = int(args['<games>'])
-  if args['<seed>'] != None:
-    random.seed(int(args['<seed>']))
+  if opts['<seed>'] != None:
+    random.seed(int(opts['<seed>']))
   # init lists
   scores = [0]*games
   dev = [0]*games
@@ -107,5 +103,11 @@ def get_opts():
 if __name__ == "__main__":
     """This code executes when the program is run from the command line"""
     opts = get_opts()
-    mean = main(opts)
+    if opts['<games>'] == None:
+      games = 10
+    else:
+      games = int(opts['<games>'])
+    opts = None
+    print("\n","\n",opts)
+    mean = main(opts, games)
     print(f"exp(pi/4) approx equal to {mean}")
