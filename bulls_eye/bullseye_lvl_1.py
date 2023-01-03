@@ -15,7 +15,7 @@ Usage:
 
 import math
 import random
-import docopt
+from docopt import docopt
 
 __version__ = "0.2.0"
 
