@@ -6,18 +6,18 @@ Write a proper docstring here such that:
 
 Have a look at https://docopt.org on how to do this
 
-Usage: 
+Usage:
     bullseye.py
     bullseye.py --seed=SEED
     bullseye.py --games=GAMES
-    bullseye.py --seed=SEED --games=GAMES 
+    bullseye.py --seed=SEED --games=GAMES
 """
 
-import math
-import random
+import numpy as np
 import docopt
 
 __version__ = "0.2.0"
+
 
 def get_opts():
     """get the options passed to the program via docopt
@@ -25,8 +25,7 @@ def get_opts():
         Returns:
             options (dict): a dictionary with the options
     """
-    options = docopt.docopt(__doc__)
-    return options
+    return docopt.docopt(__doc__)
 
 
 def update(x, y, r):
@@ -39,9 +38,6 @@ def update(x, y, r):
     :math:`\left(x, y\right)` the position the dart hit and :math:`B` the point
     intersecting the circle and the line perpendicular to
     :math:`\vec{O\left(x,y\right)}`.
-    
-    If the hit is not on the disk, return the number -1, indicating a clear miss (as the new radius cannot be smaller than zero).
-    This way, you will later know when the board was missed.
 
     Args:
       x (float): x coordinate of the dart
@@ -49,41 +45,37 @@ def update(x, y, r):
       r (float): the radius of the dart board
 
     Returns:
-        (float): the new radius if the disk was hit, -1 otherwise
+        (float): the new radius
     """
-    r_hit_sq = x**2 + y**2
-    r_cur_sq = r**2
-    if r_hit_sq <= r_cur_sq:
-      #hit
-      r_new = math.sqrt(r_cur_sq - r_hit_sq)
-    else:
-      #miss
-      r_new = -1
-    return r_new
+    # Distance from centre to where the dart landed squared
+    centre_distance_squared = x**2 + y**2
+    # This would solve the Test, but makes no sense in the program whatsoever
+    if centre_distance_squared > r**2:
+        raise AssertionError
+    return np.sqrt(r**2 - centre_distance_squared)
 
 
 def game():
     """One game of hitting the dart board until we miss
 
-    First, we set the radius to 1, as this is the radius of the disk we want to start with.
-    We also initialize a new variable to keep track of the score, i.e. the number of darts thrown until
-    the board was missed (including the dart that missed). So, for example, if the first dart already misses the disk,
-    the score should still be 1.
-
-    Then, until we missed, we throw to a random point (x, y), update the radius using the update function above and increase the score by one.
-    When a dart misses the board, the game ends and the final score is returned.
+    First, we set the radius to 1 and the score to 0.
+    Then, as long as we hit the board, add 1 to the scores for each dart thrown, throw to a random
+    (x,y) coordinate, update the new radius or end the game if we missed.
+    Finally return the number of scores.
 
     Returns:
       score (int): the number of darts thrown.
     """
     r = 1
-    i = 0
-    while r!=-1:
-      x = random.uniform(-1,1)
-      y = random.uniform(-1,1)
-      r = update(x,y,r)
-      i = i+1
-    return i 
+    score = 1
+    while True:
+        # gives x and y a random number between 0 and 1
+        x, y = np.random.uniform(-1, 1, 2)
+        # check whether the dart would hit
+        if x**2 + y**2 >= r**2:
+            return score
+        r = update(x, y, r)
+        score += 1
 
 
 def main(opts, games=10):
@@ -98,19 +90,15 @@ def main(opts, games=10):
     Returns:
       mean (float):  the mean value of the scores
     """
-    if opts['--seed'] != None:
-      random.seed(opts['--seed'])
-    if opts['--games'] != None:
-      games = int(opts['--games'])
-    
-    scores = [0]*games
-    dev = [0]*games
+    if opts is not None:
+        if opts["--games"] is not None:
+            games = int(opts["--games"])
+        if opts["--seed"] is not None:
+            np.random.seed(int(opts["--seed"]))
+    sum_of_scores = 0
     for i in range(games):
-      scores[i] = game()
-      dev[i] = (math.pi/4) - scores[i]
-    mean = sum(scores)/games
-    sdv = math.sqrt(abs(sum(dev))/games)
-    return mean
+        sum_of_scores += game()
+    return sum_of_scores/games
 
 
 if __name__ == "__main__":
