@@ -7,10 +7,7 @@ Write a proper docstring here such that:
 Have a look at https://docopt.org on how to do this
 
 Usage: 
-    bullseye.py
-    bullseye.py --seed=SEED
-    bullseye.py --games=GAMES
-    bullseye.py --seed=SEED --games=GAMES 
+    bullseye.py [--seed=SEED] [--games=GAMES] 
 """
 
 import math
@@ -25,7 +22,7 @@ def get_opts():
         Returns:
             options (dict): a dictionary with the options
     """
-    options = docopt.docopt(__doc__)
+    options = docopt(__doc__)
     return options
 
 

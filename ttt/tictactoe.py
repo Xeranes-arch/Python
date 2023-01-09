@@ -23,8 +23,8 @@ class Board():
           grid (np.array):   a grid onto which players can put their markers.
           last_move (int): the position of the last played marker.
         """
-        grid = np.empty(shape=(3,3),dtype=str)
-        last_move = None
+        self.grid = np.empty(shape=(3,3),dtype=str)
+        self.last_move = None
 
 
     def __str__(self):
@@ -56,7 +56,7 @@ class Board():
 
           1 | 2 | 3
           ---------
-          4 | 5 | 6
+          4 | 5 | 
           ---------
           7 | 8 | 9
 
