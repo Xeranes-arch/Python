@@ -148,6 +148,7 @@ class Board():
             #TODO Win by col
 
 
+
     def is_full(self):
         """Checks if the grid is full and, if so, raises an IndexError"""
         n = 0
