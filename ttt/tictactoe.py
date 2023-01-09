@@ -11,10 +11,10 @@ from warnings import warn
 
 __version__ = "0.1.0"
 
+
 class Board():
     """A grid of 3 by 3 where players can place
     their markers."""
-
 
     def __init__(self):
         """A Board for the game TicTacToe
@@ -23,9 +23,9 @@ class Board():
           grid (np.array):   a grid onto which players can put their markers.
           last_move (int): the position of the last played marker.
         """
-        self.grid = np.empty(shape=(3,3),dtype=str)
+        self.grid = np.empty(shape=(3, 3), dtype=str)
+        self.grid = np.where(self.grid == "", "X", "O")
         self.last_move = None
-
 
     def __str__(self):
         """A nice printable representation of the board
@@ -33,8 +33,13 @@ class Board():
             Returns:
                 String containing the printable representation of the board
         """
-        pass
-
+        out = "\n  " + self.grid[0, 0] + "  |  " + self.grid[0, 1] + \
+            "  |  " + self.grid[0, 2] + "\n-----|-----|-----\n" + \
+            "  " + self.grid[0, 0] + "  |  " + self.grid[0, 1] + \
+            "  |  " + self.grid[0, 2] + "\n-----|-----|-----\n" + \
+            "  " + self.grid[0, 0] + "  |  " + \
+            self.grid[0, 1] + "  |  " + self.grid[0, 1] + "\n"
+        return out
 
     def place(self, position, marker="X"):
         """Place a marker in the given spot
@@ -43,11 +48,7 @@ class Board():
         exist (not between 1 and 9), raise a ValueError, saying the spot is out of bounds. If the
         spot is already taken, raise a ValueError saying that the spot is taken.
 
-            TODO: maybe it would be best to put this check in a helper function
-            ``is_valid(position)``
-
         Then, we place the marker in the given location on the grid.
-
         We record the position in self.last_move
 
         Args:
@@ -56,16 +57,15 @@ class Board():
 
           1 | 2 | 3
           ---------
-          4 | 5 | 
+          4 | 5 | 6
           ---------
           7 | 8 | 9
 
           marker (str): X or O, the marker of the player
         """
-        #TODO Check if valid spot
-        self[position-1] = marker
+        self.is_valid(position)
+        self[position_to_coordinates(position)] = marker
         self.last_move = position
-
 
     def is_valid(self, position):
         """helper function to determine if the move is allowed
@@ -82,8 +82,12 @@ class Board():
 
         TODO: reconcile with Game.make_move
         """
-        pass
+        print(position)
+        if position < 1 or position > 9:
+            raise ValueError("the position is out of bounds")
 
+        if self.grid[position_to_coordinates(position)] != "":
+            raise ValueError("the spot is already taken")
 
     def show_marker(self, marker):
         """
@@ -91,11 +95,11 @@ class Board():
 
         Example:
             Board is:
-            
+
             [["X", "X", "O"],
              ["X", "O", "X"],
              ["X", "",  ""]]
-            
+
             show_marker("X") returns:
 
             [[True, True, False],
@@ -107,16 +111,8 @@ class Board():
 
         Returns:
           - (np.array): An array with <marker> as ``True``, the rest ``False``.
-
         """
-        bool_arr=np.empty(shape=(3,3),dtype=bool)
-        for i in range(self.size):
-          if self[i]==marker:
-            bool_arr[i]==True
-          else:
-            bool_arr[i]==False
-        return bool_arr
-
+        return np.where(self.grid == marker, True, False)
 
     def has_won(self):
         """check if one of the four winning conditions has occurred:
@@ -128,51 +124,49 @@ class Board():
 
         and rise a TimeoutError with the player's marker as the text if the game is won.
         """
-        pos = position_to_coordinates(self.last_move)
-        tr = Board.show_marker(self,self[pos])
-        # Row check
-        n = 0
-        for i in range(5):
-          row = pos[1]
-          col_i = pos[0] - 2 + i
-          if col_i >= 0 and col_i <= 2 and tr[(row,col_i)]:
-            n = n + 1
-            #TODO Win by row
-        # Col check
-        n = 0
-        for i in range(5):
-          col = pos[0]
-          row_i = pos[1] - 2 + i
-          if row_i >= 0 and row_i <= 2 and tr[(col,row_i)]:
-            n = n + 1
-            #TODO Win by col
-
-
+        arr_bool = self.show_marker("").astype(int)
+        arr_row = np.copy(arr_bool) + np.roll(arr_bool, 1,
+                                              axis=0) + np.roll(arr_bool, 2, axis=0)
+        arr_col = np.copy(arr_bool) + np.roll(arr_bool, 1,
+                                              axis=1) + np.roll(arr_bool, 2, axis=1)
+        dia = adi = 0
+        for i in range(3):
+            dia += arr_bool[i, i]
+            adi += np.flip(arr_bool, axis=0)[i, i]
+        if 3 in (*arr_row[0, :], *arr_col[:, 0], dia, adi):
+            raise TimeoutError("win")  # TODO declare Winner
 
     def is_full(self):
         """Checks if the grid is full and, if so, raises an IndexError"""
         n = 0
-        for i in range(self.size):
-          n = n + 1
-          if n == 9:
-            pass
-            #TODO Timeout Error
+        for i in range(self.grid.size):
+            if self.grid[position_to_coordinates(i+1)] != "":
+                n += 1
+            print(n)
+            if n == 9:
+                raise TimeoutError("Board is full.")
+
 
 def position_to_coordinates(position):
     """helper function: converts a given position (1 - 9) to coordinates (row, col) on the grid"""
     col = position % 3 - 1
     n = 1
     while position > 3:
-      position = position - 3
-      n = n + 1
-    row = n
-    return((row,col))
-
-def diagonal(grid):
-    """helper function: find the diagonal of the board"""
-    pass
+        position = position - 3
+        n = n + 1
+    row = n - 1
+    return ((row, col))
 
 
-def antidiagonal(grid):
-    """helper function: find the antidiagonal of the board"""
-    pass
+# def diagonal(grid):
+#    """helper function: find the diagonal of the board"""
+#    pass
+
+
+# def antidiagonal(grid):
+#    """helper function: find the antidiagonal of the board"""
+#    pass
+
+
+board = Board()
+print(board.__str__())

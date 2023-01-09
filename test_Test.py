@@ -1,7 +1,9 @@
 from Test import yes
 
+
 def test_yes():
     assert yes()
+
 
 class Car(Vehicle):
     """weee"""
@@ -9,7 +11,7 @@ class Car(Vehicle):
     def __init__(self, model, color):
         """init"""
         pass
-    
+
     def __repr__(self) -> str:
         return super().__repr__()
 
