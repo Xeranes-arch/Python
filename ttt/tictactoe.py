@@ -24,7 +24,7 @@ class Board():
           last_move (int): the position of the last played marker.
         """
         self.grid = np.empty(shape=(3, 3), dtype=str)
-        self.grid = np.where(self.grid == "", "X", "O")
+        self.grid = np.where(self.grid == "", "O", "X")
         self.last_move = None
 
     def __str__(self):
@@ -85,7 +85,6 @@ class Board():
         print(position)
         if position < 1 or position > 9:
             raise ValueError("the position is out of bounds")
-
         if self.grid[position_to_coordinates(position)] != "":
             raise ValueError("the spot is already taken")
 
@@ -112,6 +111,7 @@ class Board():
         Returns:
           - (np.array): An array with <marker> as ``True``, the rest ``False``.
         """
+        # haha oneliner
         return np.where(self.grid == marker, True, False)
 
     def has_won(self):
@@ -124,25 +124,32 @@ class Board():
 
         and rise a TimeoutError with the player's marker as the text if the game is won.
         """
-        arr_bool = self.show_marker("").astype(int)
-        arr_row = np.copy(arr_bool) + np.roll(arr_bool, 1,
-                                              axis=0) + np.roll(arr_bool, 2, axis=0)
-        arr_col = np.copy(arr_bool) + np.roll(arr_bool, 1,
-                                              axis=1) + np.roll(arr_bool, 2, axis=1)
+        arr_X = self.show_marker("X").astype(int)
+        arr_O = self.show_marker("O").astype(int)
+        # arr_bool of X=1 O=-1 and ""=0
+        arr_bool = np.zeros_like(self.grid, dtype=int) \
+            + arr_X - arr_O
+        # sum up the cols and rows
+        arr_col = arr_row = np.copy(arr_bool)
+        arr_col[0, :] = arr_bool[0, :] + arr_bool[1, :] + arr_bool[2, :]
+        arr_row[:, 0] = arr_bool[:, 0] + arr_bool[:, 1] + arr_bool[:, 2]
         dia = adi = 0
+        # if any 3 or -3 there's a win
         for i in range(3):
             dia += arr_bool[i, i]
             adi += np.flip(arr_bool, axis=0)[i, i]
-        if 3 in (*arr_row[0, :], *arr_col[:, 0], dia, adi):
-            raise TimeoutError("win")  # TODO declare Winner
+        if 3 in (*arr_col[0, :], *arr_row[:, 0], dia, adi):
+            raise TimeoutError("X wins")
+        if -3 in (*arr_col[0, :], *arr_row[:, 0], dia, adi):
+            raise TimeoutError("O wins")
 
     def is_full(self):
         """Checks if the grid is full and, if so, raises an IndexError"""
         n = 0
         for i in range(self.grid.size):
+            # count up when grid isn't empty
             if self.grid[position_to_coordinates(i+1)] != "":
                 n += 1
-            print(n)
             if n == 9:
                 raise TimeoutError("Board is full.")
 
@@ -156,16 +163,6 @@ def position_to_coordinates(position):
         n = n + 1
     row = n - 1
     return ((row, col))
-
-
-# def diagonal(grid):
-#    """helper function: find the diagonal of the board"""
-#    pass
-
-
-# def antidiagonal(grid):
-#    """helper function: find the antidiagonal of the board"""
-#    pass
 
 
 board = Board()
