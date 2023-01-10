@@ -5,13 +5,13 @@
 import pytest
 import numpy as np
 
-import tictactoe
-from tictactoe import Board, __version__
+import ttt.tictactoe as tictactoe
+from ttt.tictactoe import Board
 
 
 def test_version():
     """tests TicTacToe version number"""
-    assert __version__ == "0.1.0"
+    assert tictactoe.__version__ == "0.1.0"
 
 
 @pytest.fixture
