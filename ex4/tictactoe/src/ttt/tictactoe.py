@@ -161,3 +161,55 @@ def position_to_coordinates(position):
         n = n + 1
     row = n - 1
     return ((row, col))
+
+class Player():
+    """A player for the game
+
+    Args:
+        name (str):  the player's name
+        marker (str): a marker for the player. Either X or O
+    """
+    def __init__(self, name, marker):
+        pass
+
+    def __str__(self):
+        """The representation of Player is their name, so this method should return it"""
+        pass
+
+    @property
+    def name(self):
+        """Getter for the name variable
+        
+        Returns:
+            Player's name
+        """
+        pass
+
+    @name.setter
+    def name(self, value):
+        """Setter for the name variable. It should prevent setting the name to an empty string by raising a ValueError
+
+        Args:
+            value (str): The string that should be set as the player's name
+
+        """
+        pass
+
+    @property
+    def marker(self):
+        """Getter for the marker variable
+        
+        Returns:
+            Player's marker
+        """
+        pass
+
+    @marker.setter
+    def marker(self, value):
+        """Setter fo the marker variable. It should prevent setting the marker to anything other than X or O (case insensitive) and transform every given value into upper case.
+        When passed an illegal value, it should raise a ValueError
+
+        Args:
+            value (str): The marker that should be set for the player (either X or O, case insensitive)
+        """
+        pass
