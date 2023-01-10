@@ -283,6 +283,7 @@ class Game():
         Board.place(spot, self.current)
         # TODO handle invalid moves
         Board.has_won()
+
         # TODO handle win
         Board.is_full()
         # TODO draw
@@ -302,11 +303,10 @@ class Game():
 
         """
         spot = input("Choose spot to place your marker:")
-        try:
-            assert type(spot) == int
-        except:
+        if type(spot) != int:
             if spot.upper() == "Q":
                 raise EOFError("Quit.")
+            raise ValueError("Not an Integer.")
 
     def write_stats(self, player, filename):
         """appends the winner with timestamp to the statistics
@@ -315,4 +315,10 @@ class Game():
           player (str):   name to write down
           filename (str): filename of the hall of fame (assume it is a json)
         """
-        pass
+        #file = open(self.statistics)
+        file = open("C:\\Users\\Xeonis7\\Documents\\Python\\ex4\\tictactoe\\src\\stats.json")
+        #TODO see if this path is fucky
+        halloffame = json.load(file)
+        new_winner = {"Winner":self.current}
+        halloffame.update(new_winner)
+    
