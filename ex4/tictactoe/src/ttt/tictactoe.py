@@ -226,6 +226,7 @@ class Player():
 
 class Game():
     """A game of tictactoe"""
+
     def __init__(self, name_1="Alice", name_2="Bob", statistics="stats.json"):
         """Initialises a Game of TicTacToe
 
@@ -241,31 +242,31 @@ class Game():
           self.statistics (str): hall of fame filename to write the winner to
           self._current (Player): The player that is to move next. Should be initialized by setting it to player_1
         """
-        pass
-
+        self.board = Board()
+        self.name_1 = name_1
+        self.name_2 = name_2
+        self.statistics = statistics
+        self.current = self.name_1
 
     @property
     def player_1(self):
         """Player 1"""
-        pass
-
+        return self.__player_1
 
     @player_1.setter
     def player_1(self, value):
         """Set player 1"""
-        pass
-
+        self.__player_1 = Player.name(value)
 
     @property
     def player_2(self):
         """Player 2"""
-        pass
-
+        return self.__player_2
 
     @player_2.setter
     def player_2(self, value):
         """Set player 2"""
-        pass
+        self.__player_2 = Player.name(value)
 
     def make_move(self):
         """Let the player in self._current make one move
@@ -278,8 +279,17 @@ class Game():
          - check if a draw has occurred: if so, raise a EOFError with a draw message
          - Set self._current to other player
          """
-        pass
-
+        spot = Game.query_spot()
+        Board.place(spot, self.current)
+        # TODO handle invalid moves
+        Board.has_won()
+        # TODO handle win
+        Board.is_full()
+        # TODO draw
+        if self.current == self.player_1:
+            self.current = self.player_2
+        else:
+            self.current = self.player_1
 
     def query_spot(self):
         """
@@ -291,8 +301,12 @@ class Game():
             The spot (int) the player chose for their marker
 
         """
-        pass
-
+        spot = input("Choose spot to place your marker:")
+        try:
+            assert type(spot) == int
+        except:
+            if spot.upper() == "Q":
+                raise EOFError("Quit.")
 
     def write_stats(self, player, filename):
         """appends the winner with timestamp to the statistics
@@ -302,4 +316,3 @@ class Game():
           filename (str): filename of the hall of fame (assume it is a json)
         """
         pass
-
