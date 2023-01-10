@@ -162,6 +162,7 @@ def position_to_coordinates(position):
     row = n - 1
     return ((row, col))
 
+
 class Player():
     """A player for the game
 
@@ -169,21 +170,23 @@ class Player():
         name (str):  the player's name
         marker (str): a marker for the player. Either X or O
     """
+
     def __init__(self, name, marker):
-        pass
+        self.name = name
+        self.marker = marker
 
     def __str__(self):
         """The representation of Player is their name, so this method should return it"""
-        pass
+        return self.name
 
     @property
     def name(self):
         """Getter for the name variable
-        
+
         Returns:
             Player's name
         """
-        pass
+        return self.__name
 
     @name.setter
     def name(self, value):
@@ -193,16 +196,19 @@ class Player():
             value (str): The string that should be set as the player's name
 
         """
-        pass
+        if value == "":
+            raise ValueError("Empty name is not permitted.")
+        else:
+            self.__name = value
 
     @property
     def marker(self):
         """Getter for the marker variable
-        
+
         Returns:
             Player's marker
         """
-        pass
+        return self.__marker
 
     @marker.setter
     def marker(self, value):
@@ -212,4 +218,8 @@ class Player():
         Args:
             value (str): The marker that should be set for the player (either X or O, case insensitive)
         """
-        pass
+        if value.upper() == "X" or value.upper() == "O":
+            self.__marker = value.upper()
+            print(self.marker)
+        else:
+            raise ValueError("only X or O are valid players")

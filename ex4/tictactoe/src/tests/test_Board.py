@@ -5,8 +5,7 @@
 import pytest
 import numpy as np
 
-import tictactoe
-from tictactoe import Board, __version__
+from ttt.tictactoe import Board, __version__
 
 
 def test_version():
