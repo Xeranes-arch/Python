@@ -220,6 +220,86 @@ class Player():
         """
         if value.upper() == "X" or value.upper() == "O":
             self.__marker = value.upper()
-            print(self.marker)
         else:
             raise ValueError("only X or O are valid players")
+
+
+class Game():
+    """A game of tictactoe"""
+    def __init__(self, name_1="Alice", name_2="Bob", statistics="stats.json"):
+        """Initialises a Game of TicTacToe
+
+        Args:
+          name_1 (str): the name of Player 1
+          name_2 (str): the name of Player 2
+          statistics (str): hall of fame filename to write the winner to
+
+        Attr:
+          self.board (Board): a board object
+          self.player_1 (Player): will evaluate to Player with marker X
+          self.player_2 (Player): will evaluate to Player with marker O
+          self.statistics (str): hall of fame filename to write the winner to
+          self._current (Player): The player that is to move next. Should be initialized by setting it to player_1
+        """
+        pass
+
+
+    @property
+    def player_1(self):
+        """Player 1"""
+        pass
+
+
+    @player_1.setter
+    def player_1(self, value):
+        """Set player 1"""
+        pass
+
+
+    @property
+    def player_2(self):
+        """Player 2"""
+        pass
+
+
+    @player_2.setter
+    def player_2(self, value):
+        """Set player 2"""
+        pass
+
+    def make_move(self):
+        """Let the player in self._current make one move
+
+         - get the current player's desired spot by running the ``query_spot`` method
+         - put the player's marker down in the selected spot returned by the ``query_spot`` method. 
+           Don't forget to handle errors raised by invalid moves and run the ``query_spot`` method again if
+           necessary until a valid choice was made. 
+         - check if a win has occurred: if so, raise a TimeoutError with a cheerful message and write to stats file using write_stats
+         - check if a draw has occurred: if so, raise a EOFError with a draw message
+         - Set self._current to other player
+         """
+        pass
+
+
+    def query_spot(self):
+        """
+        Ask the player for a spot, then determine if the answer is an integer.
+        If not, check if it was a "Q" or "q".
+        If so, end the game without result by raising an EOFError.
+
+        Return:
+            The spot (int) the player chose for their marker
+
+        """
+        pass
+
+
+    def write_stats(self, player, filename):
+        """appends the winner with timestamp to the statistics
+
+        Args:
+          player (str):   name to write down
+          filename (str): filename of the hall of fame (assume it is a json)
+        """
+        pass
+
