@@ -124,11 +124,10 @@ class Board():
         """
         arr_X = self.show_marker("X").astype(int)
         arr_O = self.show_marker("O").astype(int)
-        # arr_bool of X=1 O=-1 and ""=0
+        # arr_bool of X's=1 O's=-1 and ""=0
         arr_bool = np.zeros_like(self.grid, dtype=int) \
             + arr_X - arr_O
         # sum up the cols and rows
-        #arr_col = arr_row = np.copy(arr_bool)
         arr_col = arr_bool[0, :] + arr_bool[1, :] + arr_bool[2, :]
         arr_row = arr_bool[:, 0] + arr_bool[:, 1] + arr_bool[:, 2]
         dia = adi = 0
@@ -150,8 +149,7 @@ class Board():
             if self.grid[position_to_coordinates(i+1)] != "":
                 n += 1
             if n == 9:
-                bo = True
-        return bo
+                raise EOFError("Game is drawn.")
 
 
 def position_to_coordinates(position):
@@ -281,14 +279,23 @@ class Game():
          - check if a draw has occurred: if so, raise a EOFError with a draw message
          - Set self._current to other player
          """
-        spot = self.query_spot()
-        Board.place(self.board, spot, self.current.marker)
-        # TODO handle invalid moves and prompt again
-        if Board.has_won(self.board):
-            raise TimeoutError(self.current + " has won!")
-        if Board.is_full(self.board):
-            raise EOFError("Game is drawn.")
-        # TODO draw
+        # Rerun query spot until input is valid
+        while True:
+            try:
+                spot = self.query_spot()
+                Board.place(self.board, spot, self.current.marker)
+                break
+            except ValueError:
+                pass
+        # Catch win and call write_stats
+        try:
+            Board.has_won(self.board)
+        except TimeoutError:
+            self.write_stats(self.current.name, self.statistics)
+            raise TimeoutError(self.current.name + " has won!")
+        # Catch draw
+        Board.is_full(self.board)
+        # Change Player
         if self.current == self.player_1:
             self.current = self.player_2
         else:
@@ -305,11 +312,12 @@ class Game():
 
         """
         spot = input("Choose spot to place your marker:")
+        # Catch quit
         if spot.upper() == "Q":
             raise EOFError("Quit.")
+        # Catch non int
         if type(int(spot)) != int:
             raise ValueError("Not an Integer.")
-
         return int(spot)
 
     def write_stats(self, player, filename):
@@ -322,7 +330,6 @@ class Game():
         #file = open(self.statistics)
         file = open(
             "C:\\Users\\Xeonis7\\Documents\\Python\\ex4\\tictactoe\\src\\stats.json")
-        # TODO see if this path is fucky
         halloffame = json.load(file)
         new_winner = {"Winner": self.current}
         halloffame.update(new_winner)
