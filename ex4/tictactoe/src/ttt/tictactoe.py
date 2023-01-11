@@ -34,10 +34,10 @@ class Board():
         """
         out = "\n  " + self.grid[0, 0] + "  |  " + self.grid[0, 1] + \
             "  |  " + self.grid[0, 2] + "\n-----|-----|-----\n" + \
-            "  " + self.grid[0, 0] + "  |  " + self.grid[0, 1] + \
-            "  |  " + self.grid[0, 2] + "\n-----|-----|-----\n" + \
-            "  " + self.grid[0, 0] + "  |  " + \
-            self.grid[0, 1] + "  |  " + self.grid[0, 1] + "\n"
+            "  " + self.grid[1, 0] + "  |  " + self.grid[1, 1] + \
+            "  |  " + self.grid[1, 2] + "\n-----|-----|-----\n" + \
+            "  " + self.grid[2, 0] + "  |  " + \
+            self.grid[2, 1] + "  |  " + self.grid[2, 1] + "\n"
         return out
 
     def place(self, position, marker="X"):
@@ -146,10 +146,12 @@ class Board():
         n = 0
         for i in range(self.grid.size):
             # count up when grid isn't empty
+            bo = False
             if self.grid[position_to_coordinates(i+1)] != "":
                 n += 1
             if n == 9:
-                raise TimeoutError("Board is full.")
+                bo = True
+        return bo
 
 
 def position_to_coordinates(position):
@@ -243,10 +245,10 @@ class Game():
           self._current (Player): The player that is to move next. Should be initialized by setting it to player_1
         """
         self.board = Board()
-        self.name_1 = name_1
-        self.name_2 = name_2
+        self.player_1 = name_1
+        self.player_2 = name_2
         self.statistics = statistics
-        self.current = self.name_1
+        self.current = self.player_1
 
     @property
     def player_1(self):
@@ -256,7 +258,7 @@ class Game():
     @player_1.setter
     def player_1(self, value):
         """Set player 1"""
-        self.__player_1 = Player.name(value)
+        self.__player_1 = Player(value, "X")
 
     @property
     def player_2(self):
@@ -266,7 +268,7 @@ class Game():
     @player_2.setter
     def player_2(self, value):
         """Set player 2"""
-        self.__player_2 = Player.name(value)
+        self.__player_2 = Player(value, "O")
 
     def make_move(self):
         """Let the player in self._current make one move
@@ -279,13 +281,13 @@ class Game():
          - check if a draw has occurred: if so, raise a EOFError with a draw message
          - Set self._current to other player
          """
-        spot = Game.query_spot()
-        Board.place(spot, self.current)
-        # TODO handle invalid moves
-        Board.has_won()
-
-        # TODO handle win
-        Board.is_full()
+        spot = self.query_spot()
+        Board.place(self.board, spot, self.current.marker)
+        # TODO handle invalid moves and prompt again
+        if Board.has_won(self.board):
+            raise TimeoutError(self.current + " has won!")
+        if Board.is_full(self.board):
+            raise EOFError("Game is drawn.")
         # TODO draw
         if self.current == self.player_1:
             self.current = self.player_2
@@ -303,10 +305,12 @@ class Game():
 
         """
         spot = input("Choose spot to place your marker:")
-        if type(spot) != int:
-            if spot.upper() == "Q":
-                raise EOFError("Quit.")
+        if spot.upper() == "Q":
+            raise EOFError("Quit.")
+        if type(int(spot)) != int:
             raise ValueError("Not an Integer.")
+
+        return int(spot)
 
     def write_stats(self, player, filename):
         """appends the winner with timestamp to the statistics
@@ -316,9 +320,9 @@ class Game():
           filename (str): filename of the hall of fame (assume it is a json)
         """
         #file = open(self.statistics)
-        file = open("C:\\Users\\Xeonis7\\Documents\\Python\\ex4\\tictactoe\\src\\stats.json")
-        #TODO see if this path is fucky
+        file = open(
+            "C:\\Users\\Xeonis7\\Documents\\Python\\ex4\\tictactoe\\src\\stats.json")
+        # TODO see if this path is fucky
         halloffame = json.load(file)
-        new_winner = {"Winner":self.current}
+        new_winner = {"Winner": self.current}
         halloffame.update(new_winner)
-    
