@@ -37,7 +37,7 @@ class Board():
             "  " + self.grid[1, 0] + "  |  " + self.grid[1, 1] + \
             "  |  " + self.grid[1, 2] + "\n-----|-----|-----\n" + \
             "  " + self.grid[2, 0] + "  |  " + \
-            self.grid[2, 1] + "  |  " + self.grid[2, 1] + "\n"
+            self.grid[2, 1] + "  |  " + self.grid[2, 2] + "\n"
         return out
 
     def place(self, position, marker="X"):
@@ -291,7 +291,9 @@ class Game():
         try:
             Board.has_won(self.board)
         except TimeoutError:
+            print("here")
             self.write_stats(self.current.name, self.statistics)
+            print(self.board)
             raise TimeoutError(self.current.name + " has won!")
         # Catch draw
         Board.is_full(self.board)
@@ -329,7 +331,9 @@ class Game():
         """
         #file = open(self.statistics)
         file = open(
-            "C:\\Users\\Xeonis7\\Documents\\Python\\ex4\\tictactoe\\src\\stats.json")
+            "C:\\Users\\sabse\\Documents\\Python\\ex4\\tictactoe\\src\\stats.json")
         halloffame = json.load(file)
-        new_winner = {"Winner": self.current}
+        new_winner = {"Winner": self.current.name}
         halloffame.update(new_winner)
+        with open("C:\\Users\\sabse\\Documents\\Python\\ex4\\tictactoe\\src\\stats.json", 'w') as f:
+            json.dump(halloffame, f)
