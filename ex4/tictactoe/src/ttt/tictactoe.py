@@ -149,6 +149,8 @@ class Board():
             if self.grid[position_to_coordinates(i+1)] != "":
                 n += 1
             if n == 9:
+                print(self)
+                print("Game has been drawn.")
                 raise EOFError("Game is drawn.")
 
 
@@ -286,14 +288,15 @@ class Game():
                 Board.place(self.board, spot, self.current.marker)
                 break
             except ValueError:
+                print("Invalid spot, please choose again.")
                 pass
         # Catch win and call write_stats
         try:
             Board.has_won(self.board)
         except TimeoutError:
-            print("here")
             self.write_stats(self.current.name, self.statistics)
             print(self.board)
+            print("Congratulations " + self.current.name +"! You've won.")
             raise TimeoutError(self.current.name + " has won!")
         # Catch draw
         Board.is_full(self.board)
@@ -313,7 +316,7 @@ class Game():
             The spot (int) the player chose for their marker
 
         """
-        spot = input("Choose spot to place your marker:")
+        spot = input("Choose spot to place your marker, " + self.current.name + ":")
         # Catch quit
         if spot.upper() == "Q":
             raise EOFError("Quit.")
@@ -331,9 +334,9 @@ class Game():
         """
         #file = open(self.statistics)
         file = open(
-            "C:\\Users\\sabse\\Documents\\Python\\ex4\\tictactoe\\src\\stats.json")
+            "C:\\Users\\Xeonis7\\Documents\\Python\\ex4\\tictactoe\\src\\stats.json")
         halloffame = json.load(file)
-        new_winner = {"Winner": self.current.name}
-        halloffame.update(new_winner)
-        with open("C:\\Users\\sabse\\Documents\\Python\\ex4\\tictactoe\\src\\stats.json", 'w') as f:
+        new_winner = "Winner " + str(int(((list(halloffame.keys())[-1]).split(" "))[-1]) + 1)
+        halloffame[new_winner] = self.current.name
+        with open("C:\\Users\\Xeonis7\\Documents\\Python\\ex4\\tictactoe\\src\\stats.json", 'w') as f:
             json.dump(halloffame, f)

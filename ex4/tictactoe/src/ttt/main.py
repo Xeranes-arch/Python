@@ -12,10 +12,16 @@ def main():
     if a TimeoutError occurs, exit the program using sys.exit(0).
     if a EOFError occures, exit the program using sys.exit(0).
     """
-    name_1 = input("Name for Player1:")
-    name_2 = input("Name for Player2:")
+    name_1 = "Alice"
+    name_2 = "Bob"
     filename = "stats.json"
-    new = input("filename of HallofFame:")
+    a = input("Name for Player1:")
+    if not a == "":
+        name_1 = a
+    b = input("Name for Player2:")
+    if not b == "":
+        name_2 = b
+    new = input("Filename of HallofFame:")
     if not new == "":
         filename = new
     game = Game(name_1, name_2, filename)
