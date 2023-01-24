@@ -20,12 +20,12 @@ for i in range(100):
     body = pymunk.Body(mass=1, moment=10)
     body.position = (random.randint(0, 1280), random.randint(0, 720))
     body.apply_impulse_at_local_point(
-        (random.randint(-100, 100), random.randint(-100, 100)))
+        (random.randint(-1000, 1000), random.randint(-1000, 1000)))
     ball = pymunk.Circle(body, radius=10)
     ball.elasticity = 0.999999
     ball.friction = 0.999999
     game.space.add(body, ball)
 
 
-grav = (0,0)
+grav = (0, 0)
 game.run(grav)
