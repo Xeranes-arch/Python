@@ -17,6 +17,7 @@ def main():
 
     if calc.mode != None:
         doc = True
+    
     calc.mode = options['<m>']
     calc.n_1 = options['<n1>']
     calc.n_2 = options['<n2>']
