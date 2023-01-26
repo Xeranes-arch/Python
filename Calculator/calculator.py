@@ -4,7 +4,7 @@
 class Calculator():
     """Basic Calculator capable, of addition, subtraction, multiplication, division, as well as rounding to a specified decimal point."""
 
-    def __init__(self, number_1 = 1, number_2 = 1, mode = 1, round_to = 1):
+    def __init__(self, number_1 = 0, number_2 = 0, mode = 0, round_to = 0):
         """
         Attr:
         - n_1(int)         Number_1
