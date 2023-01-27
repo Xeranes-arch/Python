@@ -1,17 +1,51 @@
-import time
 import random
 
 class Player():
 
-    def __init__(self, nr, p=2):
+    def __init__(self, nr):
         self.nr = nr
         self.mode = 2
-        self.name = ""
-        
-    def human(self):
-        """Make player human. Is Computer by default."""
+        self.name = "Alice in superposition with Bob"
+    
 
+    @property
+    def mode(self):
+        return self.__mode
+
+    @mode.setter
+    def mode(self, value):
+        if value in [1,2]:
+            self.__mode = int(value)
+        else:
+            raise ValueError("Not a valid mode.")
+
+    @property
+    def name(self):
+            return self.__name
+
+    @name.setter
+    def name(self, value):
+        if type(value) == str and value != "":
+            self.__name = value
+        else:
+            raise ValueError("Not a valid name.")
+
+    @property
+    def nr(self):
+        return self.__nr
+
+    @nr.setter
+    def nr(self, value):
+        if value in [1, 2]:
+            self.__nr = int(value)
+        else:
+            raise ValueError("Not a valid nr.")
+        
+
+    def human(self):
+        """Make player human and gives them a name. Is Computer by default."""
         self.mode = 1
+        
         print("Player" + str(self.nr))
         self.name = input("Please give a name for the Player:")
 
@@ -28,9 +62,7 @@ class Player():
             return "Player" + str(self.nr)
     
     def make_move(self, legal):
-        """
-        Prompts player to make a move and returns the chosen position.
-        """
+        """Prompts player to make a move and returns the chosen position."""
 
         # Human move
         if self.mode == 1:
@@ -43,11 +75,11 @@ class Player():
 
         # Bot move
         else:
+            #time.sleep(1)
 
             # Picks move from legal list and deletes brackets
-            time.sleep(1)
-            pos = (str(random.sample(legal, k = 1))[2:-2])
+            pos = (str(random.sample(legal, k=1))[2:-2])
             print(pos)
-            time.sleep(1)
+            #time.sleep(1)
         
         return pos

@@ -17,35 +17,26 @@ class Game():
         # One players turn
         while True:
 
-            print(board)
+            print("\n", board)
             
             legal = board.legalmoves(self.current_player.nr)
 
             # Skip when no legal moves
             if legal == []:
-                print("Seems like you don't have any legal moves", self.current_player)
+                print("Seems like you don't have any legal moves " + str(self.current_player) + ".")
 
-                # End game if no legal moves twice in a row
+                # End game if there are no legal moves twice in a row
                 if end_flag:
                     s1 = board.ndiscs(self.p1.nr)
                     s2 = board.ndiscs(self.p2.nr)
-                    if s1 > s2:
-                        w = "Player" + str(self.p1.nr) + " wins!"
-                    elif s2 > s1:
-                        w = "Player" + str(self.p1.nr) + " wins!"
-                    else:
-                        w = "Nobody wins... But like this usually doesn't happen with this game..."
-                    
-                    print("Seems like the game is over.\n" + w)
-                    break
+                    return self.winner(s1,s2), s1, s2
 
                 self.inv_player()
                 end_flag = True
                 continue
 
-            else:
-                end_flag = False
-                print("It's your turn", self.current_player)
+            end_flag = False
+            print("It's your turn", self.current_player)
 
             pos = self.current_player.make_move(legal)
             board.place(pos, self.current_player.nr)
@@ -57,3 +48,12 @@ class Game():
             self.current_player = self.p2
         else:
             self.current_player = self.p1
+
+    def winner(self, s1, s2):
+        """Gets the string for the win message and the score sheet."""
+        if s1 > s2:
+            return 1
+        elif s2 > s1:
+            return 2
+        else:
+            return 0
