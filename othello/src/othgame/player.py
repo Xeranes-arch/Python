@@ -46,7 +46,7 @@ class Player():
         """Make player human and gives them a name. Is Computer by default."""
         self.mode = 1
         
-        print("Player" + str(self.nr))
+        print("--------------------------------------------------\nPlayer" + str(self.nr))
         self.name = input("Please give a name for the Player:")
 
 
